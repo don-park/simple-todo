@@ -1,0 +1,13 @@
+- users
+    - id (PK)
+    - email
+    - password_hash
+    - created_at
+- todos
+    - id (PK)
+    - user_id (FK → users.id)
+    - title
+    - description
+    - due_date
+    - is_done
+    - created_at

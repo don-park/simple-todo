@@ -1,0 +1,69 @@
+<시스템 아키텍처 문서>
+프로젝트명: SimpleToDo Web
+작성일자: 2025-04-21
+작성자: (본인 이름 기재)
+
+1. 개요
+- 본 문서는 SimpleToDo 웹 애플리케이션의 시스템 아키텍처를 정의한다.
+- 해당 시스템은 사용자가 웹 기반으로 회원가입 및 로그인 후 개인적인 할 일 목록을 관리할 수 있는 서비스를 제공하며, 프론트엔드와 백엔드가 분리된 구조로 구성된다.
+
+2. 아키텍처 목표
+- 단순하고 직관적인 설계
+- 개발과 배포의 분리
+- 확장 가능성 확보
+- 실무 친화적인 기술 스택 사용
+
+3. 구성 요소
+- 사용자 인터페이스 (Frontend)
+    - 기술 스택: React 기반 SPA
+    - 배포 플랫폼: Vercel
+    - 주요 기능
+        - 사용자 인터페이스(UI) 제공
+        - 로그인/회원가입 화면
+        - ToDo 목록 CRUD UI
+        - API 서버와 HTTP 통신
+    - 특징
+        - 정적 빌드 후 Vercel에 배포
+        - API 호출 시 CORS 정책 적용
+- API 서버 (Backend)
+    - 기술 스택: FastAPI + Uvicorn, Python 3.11 이상
+    - 배포 환경: Ubuntu 서버 내 Docker 컨테이너
+    - 주요 기능
+        - RESTful API 제공 (회원가입, 로그인, ToDo CRUD)
+        - JWT 인증 처리
+        - PostgreSQL과 ORM 연동
+    - 보안
+        - 비밀번호는 해시 처리되어 저장
+        - HTTPS 대응 가능 (Nginx 등 사용)
+- 데이터베이스 (Database)
+    - DBMS: PostgreSQL
+    - 배포 방식: Docker 컨테이너 또는 로컬 설치
+    - 주요 기능
+        - 사용자 계정 정보 저장
+        - ToDo 항목 저장
+    - 테이블 예시
+        - users 테이블: id, email, password_hash, created_at
+        - todos 테이블: id, user_id, title, description, due_date, is_done, created_at
+
+4. 통신 흐름 및 데이터 흐름
+- 사용자가 웹 브라우저에서 Vercel 배포 프론트엔드에 접속
+- 로그인 또는 회원가입 요청을 API 서버에 전송
+- 백엔드는 DB 조회 후 JWT 토큰을 발급하여 응답
+- 프론트엔드는 JWT 토큰을 저장하고 인증된 상태로 API 호출
+- 사용자의 ToDo 목록 데이터를 백엔드와 주고받음
+
+5. 시스템 구성 요약 (텍스트 다이어그램)
+    [사용자 브라우저]
+        ↓ HTTP
+    [Vercel: 프론트엔드 SPA]
+        ↓ API 요청 (JWT 포함)
+    [FastAPI: 백엔드 API 서버 - Docker]
+        ↓ ORM
+    [PostgreSQL DB]
+
+6. 향후 확장 고려 사항
+- 사용자 프로필 페이지
+- ToDo 우선순위, 마감일 알림 기능
+- 다크모드 및 테마 설정
+- 소셜 로그인 (OAuth)
+- GitHub Actions를 활용한 자동 배포 파이프라인 구성
