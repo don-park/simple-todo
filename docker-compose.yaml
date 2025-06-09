@@ -3,30 +3,27 @@ version: '3.8'
 services:
   backend:
     build: ./backend
-    ports:
-      - "8000:8000"
+    env_file:
+      - .env
+    ports: # 환경변수 BACKEND_PORT 사용
+      - "${BACKEND_PORT}:${BACKEND_PORT}"
     volumes:
       - ./backend:/app
-    environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/simpletodo_db
-      - SECRET_KEY=your-secret-key-here
     depends_on:
       db:
         condition: service_healthy  # 데이터베이스가 완전히 준비될 때까지 대기
 
   db:
     image: postgres:15
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=simpletodo_db
-      - POSTGRES_HOST_AUTH_METHOD=trust  # 개발 환경에서만 사용
-    ports:
-      - "5432:5432"
+    env_file:
+      - .env
+    expose:
+      - "${DB_PORT}"  # 외부에 열지 않고, Docker 내부에서만 노출. UFW에서 이 포트를 열지 않도록 주의할 것.
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    command: -p ${DB_PORT} # Postgres 포트 변경. 환경변수 DB_PORT 사용
     healthcheck:  # 데이터베이스 헬스체크 추가
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -p ${DB_PORT}"]
       interval: 5s
       timeout: 5s
       retries: 5

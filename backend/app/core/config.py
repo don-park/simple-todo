@@ -6,8 +6,8 @@ class Settings(BaseSettings):
     VERSION: str = "1.0.0"
     API_V1_STR: str = "/api"
     
-    DATABASE_URL: str
-    SECRET_KEY: str
+    DB_ACCESS_URL: str
+    DB_SECRET_KEY: str
     
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8  # 8 days
     
