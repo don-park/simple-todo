@@ -17,8 +17,10 @@ services:
     image: postgres:15
     env_file:
       - .env
-    expose:
-      - "${DB_PORT}"  # 외부에 열지 않고, Docker 내부에서만 노출. UFW에서 이 포트를 열지 않도록 주의할 것.
+    # expose:
+    #   - "${DB_PORT}"  # 외부에 열지 않고, Docker 내부에서만 노출. UFW에서 이 포트를 열지 않도록 주의
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     command: -p ${DB_PORT} # Postgres 포트 변경. 환경변수 DB_PORT 사용
